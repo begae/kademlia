@@ -1,0 +1,36 @@
+To join the network, a node u must have a contact to an already participating node w.
+    u = Node(ip='111111...', port=4352, id='101010...', w=(w_ip, w_port, w_id))
+
+u inserts w into the appropriate k-bucket.
+Initially, a node u's routing tree has a single node - one k-bucket covering the entire ID space.
+    u.add_new_contact(w)
+
+u then performs a node lookup for its own node ID.
+    u.look_for(u.id) : ask w if it knows about u.id -> get w's list of friends and ask them if
+    -> get their list of friends and ask them if -> but what if w is very close to u ?
+    -> u cannot populate its contacts further than w
+
+When u learns of a new contact, it attempts to insert the contact in the appropriate k-bucket.
+If that bucket is not full, the new contact is simply inserted.
+When a Kademlia node receives any message from another node, it updates the appropriate k-bucket for the sender's node ID.
+If the sending node already exists in the recipient's k-bucket, the recipient moves it to the tail of the list.
+If the node is not already in the appropriate k-bucket and the bucket has fewer than k entries, then the recipient just inserts the new sender at the tail of the list.
+If the appropriate k-bucket is full, however, then the recipient pings the k-bucket's least-recently seen node to decide what to do.
+If the least-recently seen node fails to respond, it is evicted from the k-bucket and the new sender inserted at the tail.
+Otherwise, it is moved to the tail of the list, and the new sender's contact is discarded.
+If the k-bucket's range includes u's own node ID, then the bucket is split into two new buckets, the old contents divided between the two, and the insertion attempt repeated.
+If a k-bucket with a different range is full, the new contact is simply dropped.
+    
+    
+    ping(w)
+    here(u)
+    looking_for(v, w)
+    closest_know_of(v, u)
+    get_value(key, w)
+    return_value(key, u)
+    store(kv_pair, w)
+    saved(key, u)
+    update_table()
+    split_bucket()
+    pick_some()
+
